@@ -1,16 +1,17 @@
-const bcrypt   = require('bcryptjs');
-const jwt      = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const User      = require('../models/User');
+const User = require('../models/User');
 const Blacklist = require('../models/Blacklist');
 
 const SECRET = process.env.JWT_SECRET;
 
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
-  console.log("username, password ::",username, password)
-  if (!username || !password) {
-    return res.status(400).json({ msg: 'username & password required' });
+  const { username, password, role } = req.body;
+  console.log("username, password, portalRole ::", username, password, role);
+
+  if (!username || !password || !role) {
+    return res.status(400).json({ msg: 'username, password & role required' });
   }
 
   try {
@@ -20,8 +21,18 @@ exports.login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).json({ msg: 'Invalid credentials' });
 
+    // 🔒 Role map: which real roles are allowed per login portal
+    const roleMap = {
+      admin: ['admin'],
+      user: ['user', 'member']
+    };
+
+    if (!roleMap[role].includes(user.role)) {
+      return res.status(403).json({ msg: `Only ${roleMap[role].join(', ')} can log in here` });
+    }
+
     const payload = { id: user._id, username: user.username, role: user.role };
-    const token   = jwt.sign(payload, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(payload, SECRET, { expiresIn: '1h' });
 
     res.json({ token });
   } catch (err) {
@@ -29,6 +40,8 @@ exports.login = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+
 
 exports.logout = async (req, res) => {
   const header = req.headers.authorization;
@@ -62,7 +75,7 @@ exports.register = async (req, res) => {
 
     // 3. (Optional) Auto-login: issue a JWT
     const payload = { id: user._id, username: user.username, role: user.role };
-    const token   = jwt.sign(payload, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(payload, SECRET, { expiresIn: '1h' });
 
     // 4. Return token + user info (minus password)
     res.status(201).json({ token, user: { id: user._id, username, role } });

@@ -7,24 +7,47 @@ const Notification = require('../models/Notification');
 const Supplement   = require('../models/Supplement');
 const DietDetail   = require('../models/DietDetails');
 
-exports.addMember = async (req, res) => {
-  const { username, password, name, feePackage } = req.body;
-  if (!username || !password || !name) {
-    return res.status(400).json({ msg: 'username, password & name required' });
+
+exports.promoteToMember = async (req, res) => {
+  const { username, name, contact, address, feePackage } = req.body;
+
+  if (!username || !name || !contact || !address) {
+    return res.status(400).json({ msg: 'username, name, contact & address required' });
   }
+
   try {
-    if (await User.findOne({ username })) {
-      return res.status(400).json({ msg: 'Username already exists' });
+    // Find existing user
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
     }
-    const hashed = await bcrypt.hash(password, 10);
-    const user   = await User.create({ username, password: hashed, role: 'member' });
-    const member = await Member.create({ user: user._id, name, feePackage });
-    res.json(member);
+
+    // Check if already a member
+    const existingMember = await Member.findOne({ user: user._id });
+    if (existingMember) {
+      return res.status(400).json({ msg: 'User is already a member' });
+    }
+
+    // Create member profile
+    const member = await Member.create({
+      user: user._id,
+      name,
+      contact,
+      address,
+      feePackage
+    });
+
+    // Optionally update role in User collection
+    user.role = 'member';
+    await user.save();
+
+    res.json({ msg: 'User promoted to member', member });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 };
+
 
 exports.updateMember = async (req, res) => {
   try {

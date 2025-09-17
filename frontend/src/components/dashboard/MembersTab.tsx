@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import {  useSelector } from "react-redux"
 import { Button } from "../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
 import { Input } from "../../components/ui/input"
@@ -10,31 +11,77 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
 import { Badge } from "../../components/ui/badge"
 import { Plus, Edit, Trash2 } from "lucide-react"
-import type { Member } from "../../types/Gym"
 import { toast } from "sonner"
+import { useAppDispatch } from "../../hooks"
+import type { RootState } from "../../app/store"
+import { promoteToMember } from "../../features/admin/adminSlice"
+
+
+interface Member {
+  id: string
+  name: string
+  username: string
+  feePackage: string
+  joinDate: string
+}
 
 interface MembersTabProps {
   members: Member[]
-  onAddMember: (member: Omit<Member, "id" | "joinDate">) => void
+  onAddMember: (member: Member) => void
 }
 
 export function MembersTab({ members, onAddMember }: MembersTabProps) {
-  const [memberForm, setMemberForm] = useState({ name: "", username: "", password: "", feePackage: "" })
+  const dispatch = useAppDispatch();
+  const { member, loading, error } = useSelector((state: RootState) => state.admin)
+  
+  // ✅ Updated form fields
+  const [memberForm, setMemberForm] = useState({
+    name: "",
+    username: "",
+    contact: "",
+    address: "",
+    feePackage: "",
+  })
 
-  const handleAddMember = () => {
-    if (!memberForm.name || !memberForm.username || !memberForm.password || !memberForm.feePackage) {
+  const handleAddMember = async () => {
+    const { name, username, contact, address, feePackage } = memberForm
+
+    if (!name || !username || !contact || !address || !feePackage) {
       toast.error("All fields are required")
       return
     }
 
-    onAddMember({
-      name: memberForm.name,
-      username: memberForm.username,
-      feePackage: memberForm.feePackage,
-    })
+    try {
+      await dispatch(promoteToMember({
+        username,
+        name,
+        contact,
+        address,
+        feePackage,
+      })).unwrap()
 
-    setMemberForm({ name: "", username: "", password: "", feePackage: "" })
-    toast.success("Member added successfully")
+      toast.success("Member promoted successfully")
+
+      if (member) {
+        onAddMember({
+          id: member._id,
+          name: member.name,
+          username: member.user, // adjust if needed based on response structure
+          feePackage: member.feePackage,
+          joinDate: new Date().toLocaleDateString(),
+        })
+      }
+
+      setMemberForm({
+        name: "",
+        username: "",
+        contact: "",
+        address: "",
+        feePackage: "",
+      })
+    } catch (err: any) {
+      toast.error(err || "Failed to promote member")
+    }
   }
 
   return (
@@ -42,7 +89,7 @@ export function MembersTab({ members, onAddMember }: MembersTabProps) {
       <Card className="bg-white border-rose-200 shadow-lg">
         <CardHeader>
           <CardTitle className="text-rose-900">Add New Member</CardTitle>
-          <CardDescription className="text-rose-700">Create a new gym member account</CardDescription>
+          <CardDescription className="text-rose-700">Create a new gym member profile</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -69,18 +116,28 @@ export function MembersTab({ members, onAddMember }: MembersTabProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-rose-800">
-                Password
+              <Label htmlFor="contact" className="text-rose-800">
+                Contact Number
               </Label>
               <Input
-                id="password"
-                type="password"
-                value={memberForm.password}
-                onChange={(e) => setMemberForm({ ...memberForm, password: e.target.value })}
+                id="contact"
+                value={memberForm.contact}
+                onChange={(e) => setMemberForm({ ...memberForm, contact: e.target.value })}
                 className="border-rose-200 focus:border-rose-400"
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="address" className="text-rose-800">
+                Address
+              </Label>
+              <Input
+                id="address"
+                value={memberForm.address}
+                onChange={(e) => setMemberForm({ ...memberForm, address: e.target.value })}
+                className="border-rose-200 focus:border-rose-400"
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="feePackage" className="text-rose-800">
                 Fee Package
               </Label>
@@ -99,7 +156,7 @@ export function MembersTab({ members, onAddMember }: MembersTabProps) {
               </Select>
             </div>
           </div>
-          <Button onClick={handleAddMember} className="bg-rose-600 hover:bg-rose-700">
+          <Button onClick={handleAddMember} className="bg-rose-600 hover:bg-rose-700" disabled={loading}>
             <Plus className="w-4 h-4 mr-2" />
             Add Member
           </Button>

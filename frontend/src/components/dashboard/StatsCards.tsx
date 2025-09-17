@@ -1,9 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Users, CreditCard, Bell, Pill } from "lucide-react"
-import type { Member, Bill, Notification, Supplement } from "@/types/gym"
+import type { Member, Bill, Notification, Supplement } from "../../types/Gym"
 
 interface StatsCardsProps {
   members: Member[]

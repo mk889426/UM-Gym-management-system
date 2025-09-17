@@ -5,7 +5,7 @@ const adminCtrl              = require('../controllers/adminController');
 const router = express.Router();
 router.use(verifyToken, authorizeRoles('admin'));
 
-router.post('/members',      adminCtrl.addMember);
+router.post('/members', adminCtrl.promoteToMember);
 router.put('/members/:id',   adminCtrl.updateMember);
 router.delete('/members/:id',adminCtrl.deleteMember);
 

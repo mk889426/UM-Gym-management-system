@@ -10,3 +10,4 @@ exports.viewNotifications = async (req, res) => {
   const notes = await Notification.find({ member: req.user.id });
   res.json(notes);
 };
+

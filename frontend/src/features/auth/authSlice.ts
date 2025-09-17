@@ -1,6 +1,8 @@
 // src/features/auth/authSlice.ts
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import api from '../../api/axios';
+import { jwtDecode } from "jwt-decode";
+
 
 interface User {
   id: string;
@@ -22,23 +24,53 @@ const initialState: AuthState = {
   error: null,
 };
 
+interface LoginPayload {
+  username: string
+  password: string
+  role: "admin" | "user"
+}
+
 export const login = createAsyncThunk(
-  'auth/login',
-  async (creds: { username: string; password: string }, { rejectWithValue }) => {
+  "auth/login",
+  async ({ username, password, role }: LoginPayload, { rejectWithValue }) => {
     try {
-      const res = await api.post('/auth/login', creds);
-      console.log("login response:", res.data);
+      const res = await api.post("/auth/login", { username, password, role })
+      const token = res.data.token
 
-      // 🔹 adjust mapping depending on backend
+      // 🔹 decode payload from token
+      const decoded = jwtDecode<User>(token)
+
       const user: User = {
-        id: res.data.user?._id ?? res.data._id,
-        username: res.data.user?.username ?? res.data.username,
-        role: res.data.user?.role ?? res.data.role,
-      };
+        id: decoded.id,
+        username: decoded.username,
+        role: decoded.role,
+      }
 
-      return { token: res.data.token, user };
+      // 🚨 Role enforcement
+      if (role === "admin" && user.role !== "admin") {
+        return rejectWithValue("Only admins can log in here")
+      }
+      if (role === "user" && user.role === "admin") {
+        return rejectWithValue("Admins must log in through the admin portal")
+      }
+
+      return { token, user }
     } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Login failed');
+      return rejectWithValue(err.response?.data?.message || "Login failed")
+    }
+  }
+)
+export const register = createAsyncThunk(
+  "auth/register",
+  async (creds: { username: string; password: string; role?: 'admin' | 'user' }, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/auth/register", creds);
+      const token = res.data.token;
+      const user = res.data.user as User;
+
+      return { token, user };
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Registration failed");
     }
   }
 );
@@ -83,6 +115,22 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
         state.error = (action.payload as string) || 'Login failed';
+      })
+
+      .addCase(register.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(register.fulfilled, (state, action: PayloadAction<{ token: string; user: User }>) => {
+        state.status = 'idle';
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.error = null;
+        localStorage.setItem('auth', JSON.stringify({ token: state.token, user: state.user, status: state.status }));
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = (action.payload as string) || 'Registration failed';
       });
   },
 });
