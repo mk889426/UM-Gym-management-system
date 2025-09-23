@@ -3,14 +3,8 @@
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Users, CreditCard, Bell, Pill } from "lucide-react"
-import type { Member, Bill, Notification, Supplement } from "../../types/Gym"
-
-interface StatsCardsProps {
-  members: Member[]
-  bills: Bill[]
-  notifications: Notification[]
-  supplements: Supplement[]
-}
+import { useAppSelector } from "../../hooks"
+import type { RootState } from "../../app/store"
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -23,7 +17,9 @@ const itemVariants = {
   },
 }
 
-export function StatsCards({ members, bills, notifications, supplements }: StatsCardsProps) {
+export function StatsCards() {
+  const { members } = useAppSelector((state: RootState) => state.admin) ;
+
   return (
     <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card className="bg-white border-rose-200 shadow-lg">
@@ -42,7 +38,7 @@ export function StatsCards({ members, bills, notifications, supplements }: Stats
           <CreditCard className="h-4 w-4 text-rose-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-rose-900">{bills.filter((b) => b.status === "pending").length}</div>
+          {/* <div className="text-2xl font-bold text-rose-900">{bills.filter((b) => b.status === "pending").length}</div> */}
         </CardContent>
       </Card>
 
@@ -52,7 +48,7 @@ export function StatsCards({ members, bills, notifications, supplements }: Stats
           <Bell className="h-4 w-4 text-rose-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-rose-900">{notifications.length}</div>
+          {/* <div className="text-2xl font-bold text-rose-900">{notifications.length}</div> */}
         </CardContent>
       </Card>
 
@@ -62,7 +58,7 @@ export function StatsCards({ members, bills, notifications, supplements }: Stats
           <Pill className="h-4 w-4 text-rose-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-rose-900">{supplements.length}</div>
+          {/* <div className="text-2xl font-bold text-rose-900">{supplements.length}</div> */}
         </CardContent>
       </Card>
     </motion.div>

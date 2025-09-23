@@ -16,7 +16,7 @@ interface SupplementsTabProps {
   onAddSupplement: (supplement: Omit<Supplement, "id">) => void
 }
 
-export function SupplementsTab({ supplements, onAddSupplement }: SupplementsTabProps) {
+export function SupplementsTab() {
   const [supplementForm, setSupplementForm] = useState({ name: "", price: "", stock: "" })
 
   const handleAddSupplement = () => {
@@ -26,11 +26,11 @@ export function SupplementsTab({ supplements, onAddSupplement }: SupplementsTabP
       return
     }
 
-    onAddSupplement({
-      name: supplementForm.name,
-      price: Number.parseFloat(supplementForm.price),
-      stock: Number.parseInt(supplementForm.stock) || 0,
-    })
+    // onAddSupplement({
+    //   name: supplementForm.name,
+    //   price: Number.parseFloat(supplementForm.price),
+    //   stock: Number.parseInt(supplementForm.stock) || 0,
+    // })
 
     setSupplementForm({ name: "", price: "", stock: "" })
     // toast({ title: "Success", description: "Supplement added successfully" })
@@ -105,7 +105,7 @@ export function SupplementsTab({ supplements, onAddSupplement }: SupplementsTabP
               </TableRow>
             </TableHeader>
             <TableBody>
-              {supplements.map((supplement) => (
+              {/* {supplements.map((supplement) => (
                 <TableRow key={supplement.id} className="border-rose-100">
                   <TableCell className="text-rose-900">{supplement.name}</TableCell>
                   <TableCell className="text-rose-700">${supplement.price}</TableCell>
@@ -125,7 +125,7 @@ export function SupplementsTab({ supplements, onAddSupplement }: SupplementsTabP
                     </Badge>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))} */}
             </TableBody>
           </Table>
         </CardContent>

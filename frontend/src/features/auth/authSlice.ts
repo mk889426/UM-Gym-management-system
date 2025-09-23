@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/tool
 import api from '../../api/axios';
 import { jwtDecode } from "jwt-decode";
 
-
 interface User {
   id: string;
   username: string;
@@ -17,49 +16,54 @@ interface AuthState {
   error: string | null;
 }
 
-const initialState: AuthState = {
-  token: null,
-  user: null,
-  status: 'idle',
-  error: null,
-};
-
 interface LoginPayload {
   username: string
   password: string
   role: "admin" | "user"
 }
 
+// ✅ Hydrate state directly from localStorage
+const saved = localStorage.getItem("auth");
+const parsed = saved ? (JSON.parse(saved) as AuthState) : null;
+
+const initialState: AuthState = parsed || {
+  token: null,
+  user: null,
+  status: 'idle',
+  error: null,
+};
+
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password, role }: LoginPayload, { rejectWithValue }) => {
     try {
-      const res = await api.post("/auth/login", { username, password, role })
-      const token = res.data.token
+      const res = await api.post("/auth/login", { username, password, role });
+      const token = res.data.token;
 
       // 🔹 decode payload from token
-      const decoded = jwtDecode<User>(token)
+      const decoded = jwtDecode<User>(token);
 
       const user: User = {
         id: decoded.id,
         username: decoded.username,
         role: decoded.role,
-      }
+      };
 
       // 🚨 Role enforcement
       if (role === "admin" && user.role !== "admin") {
-        return rejectWithValue("Only admins can log in here")
+        return rejectWithValue("Only admins can log in here");
       }
       if (role === "user" && user.role === "admin") {
-        return rejectWithValue("Admins must log in through the admin portal")
+        return rejectWithValue("Admins must log in through the admin portal");
       }
 
-      return { token, user }
+      return { token, user };
     } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Login failed")
+      return rejectWithValue(err.response?.data?.message || "Login failed");
     }
   }
-)
+);
+
 export const register = createAsyncThunk(
   "auth/register",
   async (creds: { username: string; password: string; role?: 'admin' | 'user' }, { rejectWithValue }) => {
@@ -83,16 +87,6 @@ const authSlice = createSlice({
       state.token = null;
       state.user = null;
       localStorage.removeItem('auth');
-    },
-    restoreSession(state) {
-      const saved = localStorage.getItem('auth');
-      if (saved) {
-        const parsed = JSON.parse(saved) as AuthState;
-        state.token = parsed.token;
-        state.user = parsed.user;
-        state.status = 'idle';
-        state.error = null;
-      }
     },
   },
   extraReducers: (builder) => {
@@ -126,7 +120,11 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.user = action.payload.user;
         state.error = null;
-        localStorage.setItem('auth', JSON.stringify({ token: state.token, user: state.user, status: state.status }));
+
+        localStorage.setItem(
+          'auth',
+          JSON.stringify({ token: state.token, user: state.user, status: state.status })
+        );
       })
       .addCase(register.rejected, (state, action) => {
         state.status = 'failed';
@@ -135,5 +133,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, restoreSession } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

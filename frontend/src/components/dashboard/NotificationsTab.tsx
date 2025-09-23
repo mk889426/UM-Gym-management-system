@@ -12,13 +12,9 @@ import { Bell } from "lucide-react"
 import type { Member, Notification } from "../../types/Gym"
 import { toast } from "sonner"
 
-interface NotificationsTabProps {
-  members: Member[]
-  notifications: Notification[]
-  onAddNotification: (notification: Omit<Notification, "id" | "memberName">) => void
-}
 
-export function NotificationsTab({ members, notifications, onAddNotification }: NotificationsTabProps) {
+
+export function NotificationsTab() {
   const [notificationForm, setNotificationForm] = useState({ memberId: "", message: "", date: "" })
 
   const handleAddNotification = () => {
@@ -27,11 +23,11 @@ export function NotificationsTab({ members, notifications, onAddNotification }: 
       return
     }
 
-    onAddNotification({
-      memberId: notificationForm.memberId,
-      message: notificationForm.message,
-      date: notificationForm.date,
-    })
+    // onAddNotification({
+    //   memberId: notificationForm.memberId,
+    //   message: notificationForm.message,
+    //   date: notificationForm.date,
+    // })
 
     setNotificationForm({ memberId: "", message: "", date: "" })
     toast.success("Notification added successfully")
@@ -58,11 +54,11 @@ export function NotificationsTab({ members, notifications, onAddNotification }: 
                   <SelectValue placeholder="Select member" />
                 </SelectTrigger>
                 <SelectContent>
-                  {members.map((member) => (
+                  {/* {members.map((member) => (
                     <SelectItem key={member.id} value={member.id}>
                       {member.name}
                     </SelectItem>
-                  ))}
+                  ))} */}
                 </SelectContent>
               </Select>
             </div>
@@ -112,13 +108,13 @@ export function NotificationsTab({ members, notifications, onAddNotification }: 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {notifications.map((notification) => (
+              {/* {notifications.map((notification) => (
                 <TableRow key={notification.id} className="border-rose-100">
                   <TableCell className="text-rose-900">{notification.memberName}</TableCell>
                   <TableCell className="text-rose-700">{notification.message}</TableCell>
                   <TableCell className="text-rose-700">{notification.date}</TableCell>
                 </TableRow>
-              ))}
+              ))} */}
             </TableBody>
           </Table>
         </CardContent>

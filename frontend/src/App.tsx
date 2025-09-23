@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { useAppSelector } from './hooks'
@@ -46,8 +47,8 @@ export default function App() {
                     ? user?.role === 'admin'
                       ? '/'
                       : user?.role === 'member'
-                      ? '/'
-                      : '/'
+                        ? '/'
+                        : '/'
                     : '/login'
                 }
               />

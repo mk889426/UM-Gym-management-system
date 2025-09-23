@@ -1,10 +1,19 @@
+
 export interface Member {
-  id: string
-  name: string
-  username: string
-  feePackage: string
-  joinDate: string
+  _id: string;               // ✅ use _id to match backend
+  user: {
+    _id: string;
+    username: string;
+  };
+  name: string;
+  contact: string;
+  address: string;
+  feePackage: string;
+  joinDate: string;          // ✅ date as string
 }
+
+
+
 
 export interface Bill {
   id: string

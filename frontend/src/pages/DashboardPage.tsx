@@ -13,90 +13,7 @@ import { ReportsTab } from "../components/dashboard/ReportsTab"
 import type { Member, Bill, Notification, Supplement, DietDetail } from "../types/Gym"
 
 export default function DashboardPage() {
-  const [members, setMembers] = useState<Member[]>([
-    { id: "1", name: "John Doe", username: "johndoe", feePackage: "Premium", joinDate: "2024-01-15" },
-    { id: "2", name: "Jane Smith", username: "janesmith", feePackage: "Basic", joinDate: "2024-02-20" },
-  ])
-
-  const [bills, setBills] = useState<Bill[]>([
-    { id: "1", memberId: "1", memberName: "John Doe", amount: 150, date: "2024-03-01", status: "paid" },
-    { id: "2", memberId: "2", memberName: "Jane Smith", amount: 100, date: "2024-03-01", status: "pending" },
-  ])
-
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      memberId: "1",
-      memberName: "John Doe",
-      message: "Your membership expires in 7 days",
-      date: "2024-03-15",
-    },
-  ])
-
-  const [supplements, setSupplements] = useState<Supplement[]>([
-    { id: "1", name: "Whey Protein", price: 45.99, stock: 25 },
-    { id: "2", name: "Creatine", price: 29.99, stock: 15 },
-  ])
-
-  const [dietDetails, setDietDetails] = useState<DietDetail[]>([
-    {
-      id: "1",
-      memberId: "1",
-      memberName: "John Doe",
-      dietPlan: "High protein, low carb diet with 2500 calories",
-      createdDate: "2024-03-01",
-    },
-  ])
-
-  const handleAddMember = (memberData: Omit<Member, "id" | "joinDate">) => {
-    const newMember: Member = {
-      id: Date.now().toString(),
-      ...memberData,
-      joinDate: new Date().toISOString().split("T")[0],
-    }
-    setMembers([...members, newMember])
-  }
-
-  const handleCreateBill = (billData: Omit<Bill, "id" | "memberName" | "status">) => {
-    const member = members.find((m) => m.id === billData.memberId)
-    const newBill: Bill = {
-      id: Date.now().toString(),
-      ...billData,
-      memberName: member?.name || "Unknown",
-      status: "pending",
-    }
-    setBills([...bills, newBill])
-  }
-
-  const handleAddNotification = (notificationData: Omit<Notification, "id" | "memberName">) => {
-    const member = members.find((m) => m.id === notificationData.memberId)
-    const newNotification: Notification = {
-      id: Date.now().toString(),
-      ...notificationData,
-      memberName: member?.name || "Unknown",
-    }
-    setNotifications([...notifications, newNotification])
-  }
-
-  const handleAddSupplement = (supplementData: Omit<Supplement, "id">) => {
-    const newSupplement: Supplement = {
-      id: Date.now().toString(),
-      ...supplementData,
-    }
-    setSupplements([...supplements, newSupplement])
-  }
-
-  const handleAddDietDetail = (dietData: Omit<DietDetail, "id" | "memberName" | "createdDate">) => {
-    const member = members.find((m) => m.id === dietData.memberId)
-    const newDietDetail: DietDetail = {
-      id: Date.now().toString(),
-      ...dietData,
-      memberName: member?.name || "Unknown",
-      createdDate: new Date().toISOString().split("T")[0],
-    }
-    setDietDetails([...dietDetails, newDietDetail])
-  }
-
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -133,7 +50,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Stats Cards */}
-        <StatsCards members={members} bills={bills} notifications={notifications} supplements={supplements} />
+        <StatsCards />
 
         {/* Main Content */}
         <motion.div variants={itemVariants}>
@@ -160,36 +77,30 @@ export default function DashboardPage() {
             </TabsList>
 
             <TabsContent value="members">
-              <MembersTab members={members} onAddMember={handleAddMember} />
+              <MembersTab />
             </TabsContent>
 
             <TabsContent value="billing">
-              <BillingTab members={members} bills={bills} onCreateBill={handleCreateBill} />
+              <BillingTab  />
             </TabsContent>
 
             <TabsContent value="notifications">
               <NotificationsTab
-                members={members}
-                notifications={notifications}
-                onAddNotification={handleAddNotification}
+                
+                
               />
             </TabsContent>
 
             <TabsContent value="supplements">
-              <SupplementsTab supplements={supplements} onAddSupplement={handleAddSupplement} />
+              <SupplementsTab  />
             </TabsContent>
 
             <TabsContent value="diet">
-              <DietTab members={members} dietDetails={dietDetails} onAddDietDetail={handleAddDietDetail} />
+              <DietTab  />
             </TabsContent>
 
             <TabsContent value="reports">
               <ReportsTab
-                members={members}
-                bills={bills}
-                notifications={notifications}
-                supplements={supplements}
-                dietDetails={dietDetails}
               />
             </TabsContent>
           </Tabs>

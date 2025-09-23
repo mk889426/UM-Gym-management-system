@@ -17,7 +17,7 @@ interface DietTabProps {
   onAddDietDetail: (dietDetail: Omit<DietDetail, "id" | "memberName" | "createdDate">) => void
 }
 
-export function DietTab({ members, dietDetails, onAddDietDetail }: DietTabProps) {
+export function DietTab() {
   const [dietForm, setDietForm] = useState({ memberId: "", dietPlan: "" })
 
   const handleAddDietDetail = () => {
@@ -26,10 +26,10 @@ export function DietTab({ members, dietDetails, onAddDietDetail }: DietTabProps)
       return
     }
 
-    onAddDietDetail({
-      memberId: dietForm.memberId,
-      dietPlan: dietForm.dietPlan,
-    })
+    // onAddDietDetail({
+    //   memberId: dietForm.memberId,
+    //   dietPlan: dietForm.dietPlan,
+    // })
 
     setDietForm({ memberId: "", dietPlan: "" })
     toast.success("Diet plan added successfully" )
@@ -52,11 +52,11 @@ export function DietTab({ members, dietDetails, onAddDietDetail }: DietTabProps)
                 <SelectValue placeholder="Select member" />
               </SelectTrigger>
               <SelectContent>
-                {members.map((member) => (
+                {/* {members.map((member) => (
                   <SelectItem key={member.id} value={member.id}>
                     {member.name}
                   </SelectItem>
-                ))}
+                ))} */}
               </SelectContent>
             </Select>
           </div>
@@ -94,13 +94,13 @@ export function DietTab({ members, dietDetails, onAddDietDetail }: DietTabProps)
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dietDetails.map((diet) => (
+              {/* {dietDetails.map((diet) => (
                 <TableRow key={diet.id} className="border-rose-100">
                   <TableCell className="text-rose-900">{diet.memberName}</TableCell>
                   <TableCell className="text-rose-700 max-w-md truncate">{diet.dietPlan}</TableCell>
                   <TableCell className="text-rose-700">{diet.createdDate}</TableCell>
                 </TableRow>
-              ))}
+              ))} */}
             </TableBody>
           </Table>
         </CardContent>

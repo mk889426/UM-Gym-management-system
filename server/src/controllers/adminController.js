@@ -1,43 +1,40 @@
-const bcrypt       = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
-const User         = require('../models/User');
-const Member       = require('../models/Member');
-const Bill         = require('../models/Bill');
+const User = require('../models/User');
+const Member = require('../models/Member');
+const Bill = require('../models/Bill');
 const Notification = require('../models/Notification');
-const Supplement   = require('../models/Supplement');
-const DietDetail   = require('../models/DietDetails');
+const Supplement = require('../models/Supplement');
+const DietDetail = require('../models/DietDetails');
 
 
 exports.promoteToMember = async (req, res) => {
-  const { username, name, contact, address, feePackage } = req.body;
+  const { username, name, contact, address, feePackage, joinDate } = req.body;
 
   if (!username || !name || !contact || !address) {
     return res.status(400).json({ msg: 'username, name, contact & address required' });
   }
 
   try {
-    // Find existing user
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    // Check if already a member
     const existingMember = await Member.findOne({ user: user._id });
     if (existingMember) {
       return res.status(400).json({ msg: 'User is already a member' });
     }
 
-    // Create member profile
     const member = await Member.create({
       user: user._id,
       name,
       contact,
       address,
-      feePackage
+      feePackage,
+      joinDate: joinDate || Date.now()
     });
 
-    // Optionally update role in User collection
     user.role = 'member';
     await user.save();
 
@@ -49,13 +46,18 @@ exports.promoteToMember = async (req, res) => {
 };
 
 
+// controllers/adminController.js
 exports.updateMember = async (req, res) => {
   try {
     const member = await Member.findById(req.params.id);
     if (!member) return res.status(404).json({ msg: 'Member not found' });
 
-    if (req.body.name)       member.name       = req.body.name;
+    // Update allowed fields only
+    if (req.body.name) member.name = req.body.name;
+    if (req.body.contact) member.contact = req.body.contact;
+    if (req.body.address) member.address = req.body.address;
     if (req.body.feePackage) member.feePackage = req.body.feePackage;
+    if (req.body.joinDate) member.joinDate = req.body.joinDate;
 
     await member.save();
     res.json(member);
@@ -65,37 +67,52 @@ exports.updateMember = async (req, res) => {
   }
 };
 
+
+// DELETE /admin/members/:id
 exports.deleteMember = async (req, res) => {
   try {
     const member = await Member.findById(req.params.id);
-    if (!member) return res.status(404).json({ msg: 'Member not found' });
+    if (!member) return res.status(404).json({ msg: "Member not found" });
 
-    await User.findByIdAndDelete(member.user);
-    await Bill.deleteMany({ member: member._id });
-    await Notification.deleteMany({ member: member._id });
-    await DietDetail.deleteMany({ member: member._id });
-    await member.remove();
-
-    res.json({ msg: 'Member deleted' });
+    await member.deleteOne();
+    res.json({ msg: "Member deleted successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 };
 
+
+// controllers/adminController.js
 exports.createBill = async (req, res) => {
-  const { memberId, amount, date } = req.body;
+  const { memberId, amount, date, status } = req.body;
   if (!memberId || amount == null || !date) {
     return res.status(400).json({ msg: 'memberId, amount & date required' });
   }
   try {
-    const bill = await Bill.create({ member: memberId, amount, date });
-    res.json(bill);
+    const bill = await Bill.create({
+      member: memberId,
+      amount,
+      date,
+      status: status || 'pending'
+    });
+
+    const populated = await bill.populate('member', 'name');
+    res.json({
+      id: populated._id,
+      memberId: populated.member._id,
+      memberName: populated.member.name,
+      amount: populated.amount,
+      date: populated.date,
+      status: populated.status
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 };
+
+
 
 exports.assignNotification = async (req, res) => {
   const { memberId, message, date } = req.body;
@@ -113,8 +130,8 @@ exports.assignNotification = async (req, res) => {
 
 exports.exportReports = async (_req, res) => {
   try {
-    const members       = await Member.find().populate('user','username role');
-    const bills         = await Bill.find();
+    const members = await Member.find().populate('user', 'username role');
+    const bills = await Bill.find();
     const notifications = await Notification.find();
     res.json({ members, bills, notifications });
   } catch (err) {
@@ -159,4 +176,70 @@ exports.createDietDetail = async (req, res) => {
 exports.listDietDetails = async (_req, res) => {
   const list = await DietDetail.find();
   res.json(list);
+};
+
+exports.listMembers = async (req, res) => {
+  try {
+    const members = await Member.find()
+      .populate('user', 'username email') // optionally include user details like username, email
+      .sort({ name: 1 }) // sort by name or any other criteria
+
+    res.json({ members })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ msg: 'Server error' })
+  }
+}
+
+exports.listBills = async (req, res) => {
+  try {
+    const bills = await Bill.find()
+      .populate('member', 'name')
+      .sort({ date: -1 });
+
+    const formatted = bills.map((b) => ({
+      id: b._id,
+      memberId: b.member._id,
+      memberName: b.member.name,
+      amount: b.amount,
+      date: b.date,
+      status: b.status,
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
+
+exports.updateBillStatus = async (req, res) => {
+  const { id } = req.params;  // bill id from URL
+  const { status } = req.body;
+
+  if (!['paid', 'pending'].includes(status)) {
+    return res.status(400).json({ msg: 'Invalid status value' });
+  }
+
+  try {
+    const bill = await Bill.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    ).populate('member', 'name');
+
+    if (!bill) return res.status(404).json({ msg: 'Bill not found' });
+
+    res.json({
+      id: bill._id,
+      memberId: bill.member._id,
+      memberName: bill.member.name,
+      amount: bill.amount,
+      date: bill.date,
+      status: bill.status,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
 };
