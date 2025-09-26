@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSelector } from "react-redux"
 import { Button } from "../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
 import { Input } from "../../components/ui/input"
@@ -9,29 +10,39 @@ import { Textarea } from "../../components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
 import { Bell } from "lucide-react"
-import type { Member, Notification } from "../../types/Gym"
 import { toast } from "sonner"
-
-
+import type { Member, Notification } from "../../types/Gym"
+import type { RootState } from "../../app/store"
+import { assignNotification } from "../../features/admin/adminSlice"
+import { useAppDispatch } from "../../hooks"
+import { unwrapResult } from "@reduxjs/toolkit"
 
 export function NotificationsTab() {
+  const members = useSelector((state: RootState) => state.admin.members) // ✅ from redux
+
   const [notificationForm, setNotificationForm] = useState({ memberId: "", message: "", date: "" })
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [loading, setLoading] = useState(false)
+  const dispatch = useAppDispatch();
 
-  const handleAddNotification = () => {
-    if (!notificationForm.memberId || !notificationForm.message || !notificationForm.date) {
-      toast.error("All fields are required")
-      return
-    }
-
-    // onAddNotification({
-    //   memberId: notificationForm.memberId,
-    //   message: notificationForm.message,
-    //   date: notificationForm.date,
-    // })
-
-    setNotificationForm({ memberId: "", message: "", date: "" })
-    toast.success("Notification added successfully")
+  const handleAddNotification = async () => {
+  if (!notificationForm.memberId || !notificationForm.message || !notificationForm.date) {
+    toast.error("All fields are required")
+    return
   }
+
+  try {
+    const resultAction = await dispatch(assignNotification(notificationForm))
+    const data = unwrapResult(resultAction) // data is type Notification
+
+    toast.success("Notification added successfully")
+    setNotificationForm({ memberId: "", message: "", date: "" })
+  } catch (err: any) {
+    toast.error(err || "Failed to send notification")
+  }
+}
+
+
 
   return (
     <div className="space-y-6">
@@ -54,11 +65,11 @@ export function NotificationsTab() {
                   <SelectValue placeholder="Select member" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* {members.map((member) => (
-                    <SelectItem key={member.id} value={member.id}>
+                  {members.map((member: Member) => (
+                    <SelectItem key={member._id} value={member._id}>
                       {member.name}
                     </SelectItem>
-                  ))} */}
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -87,9 +98,13 @@ export function NotificationsTab() {
               rows={3}
             />
           </div>
-          <Button onClick={handleAddNotification} className="bg-rose-600 hover:bg-rose-700">
+          <Button
+            onClick={handleAddNotification}
+            disabled={loading}
+            className="bg-rose-600 hover:bg-rose-700"
+          >
             <Bell className="w-4 h-4 mr-2" />
-            Send Notification
+            {loading ? "Sending..." : "Send Notification"}
           </Button>
         </CardContent>
       </Card>
@@ -108,17 +123,22 @@ export function NotificationsTab() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {/* {notifications.map((notification) => (
-                <TableRow key={notification.id} className="border-rose-100">
-                  <TableCell className="text-rose-900">{notification.memberName}</TableCell>
+              {notifications.map((notification) => (
+                <TableRow key={notification._id} className="border-rose-100">
+                  <TableCell className="text-rose-900">
+                    {typeof notification.member === "object"
+                      ? (notification.member as Member).name
+                      : notification.member}
+                  </TableCell>
                   <TableCell className="text-rose-700">{notification.message}</TableCell>
                   <TableCell className="text-rose-700">{notification.date}</TableCell>
                 </TableRow>
-              ))} */}
+              ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
     </div>
   )
 }

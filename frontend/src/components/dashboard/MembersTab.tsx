@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { Badge } from "../../components/ui/badge";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { useAppDispatch } from "../../hooks";
 import type { RootState } from "../../app/store";
 import { fetchMembers, promoteToMember, updateMember, deleteMember } from "../../features/admin/adminSlice";
@@ -364,7 +364,7 @@ export function MembersTab() {
         </DialogContent>
       </Dialog>
 
-
+          <Toaster />
     </div>
   );
 }

@@ -25,15 +25,14 @@ export interface Bill {
 }
 
 export interface Notification {
-  id: string
-  memberId: string
-  memberName: string
+  _id: string
+  member: string | Member
   message: string
   date: string
 }
 
 export interface Supplement {
-  id: string
+  _id: string
   name: string
   price: number
   stock: number

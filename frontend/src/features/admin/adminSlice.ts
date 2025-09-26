@@ -2,16 +2,20 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import api from "../../api/axios";
-import type { Bill, Member } from "../../types/Gym";
+import type { Bill, DietDetail, Member, Supplement } from "../../types/Gym";
 
 
 interface AdminState {
   member: Member | null
   members: Member[]
-  bills: Bill[]   // ✅ add bills
+  bills: Bill[]
+  notifications: Notification[]
+  supplements: Supplement[]
+  dietDetails: DietDetail[]
   loading: boolean
   error: string | null
 }
+
 
 interface PromoteMemberPayload {
   username: string;
@@ -197,15 +201,214 @@ export const updateBillStatus = createAsyncThunk<
 })
 
 
+export const assignNotification = createAsyncThunk<
+  Notification, // return type
+  { memberId: string; message: string; date: string }, // argument type
+  { state: RootState; rejectValue: string }
+>(
+  "notifications/assignNotification",
+  async ({ memberId, message, date }, { getState, rejectWithValue }) => {
+    try {
+      const state = getState()
+      const token = state.auth.token || localStorage.getItem("token")
+
+      if (!token) {
+        return rejectWithValue("No auth token found")
+      }
+
+      const res = await api.post(
+        "/admin/notifications",
+        { memberId, message, date },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      return res.data
+    } catch (err: any) {
+      return rejectWithValue(
+        err.response?.data?.msg || err.message || "Failed to assign notification"
+      )
+    }
+  }
+)
+
+
+// ✅ Create a new supplement
+export const createSupplement = createAsyncThunk<
+  Supplement,
+  { name: string; price: number; stock?: number },
+  { state: RootState }
+>("admin/createSupplement", async (payload, { getState, rejectWithValue }) => {
+  try {
+    const state = getState()
+    const token = state.auth.token || localStorage.getItem("token")
+    if (!token) throw new Error("No auth token found")
+
+    const res = await api.post("/admin/supplements", payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data as Supplement
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.msg || error.message || "Failed to create supplement")
+  }
+})
+
+// ✅ List supplements
+export const listSupplements = createAsyncThunk<
+  Supplement[],
+  void,
+  { state: RootState }
+>("admin/listSupplements", async (_, { getState, rejectWithValue }) => {
+  try {
+    const state = getState()
+    const token = state.auth.token || localStorage.getItem("token")
+    if (!token) throw new Error("No auth token found")
+
+    const res = await api.get("/admin/supplements", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data as Supplement[]
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.msg || error.message || "Failed to fetch supplements")
+  }
+})
+
+
+// ✅ Update Supplement
+export const updateSupplement = createAsyncThunk<
+  Supplement,
+  { id: string; name?: string; price?: number; stock?: number },
+  { state: RootState }
+>("admin/updateSupplement", async ({ id, ...payload }, { getState, rejectWithValue }) => {
+  try {
+    const state = getState()
+    const token = state.auth.token || localStorage.getItem("token")
+    if (!token) throw new Error("No auth token found")
+
+    const res = await api.put(`/admin/supplements/${id}`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data as Supplement
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.msg || error.message || "Failed to update supplement")
+  }
+})
+
+// ✅ Delete Supplement
+export const deleteSupplement = createAsyncThunk<
+  string,
+  string,
+  { state: RootState }
+>("admin/deleteSupplement", async (id, { getState, rejectWithValue }) => {
+  try {
+    const state = getState()
+    const token = state.auth.token || localStorage.getItem("token")
+    if (!token) throw new Error("No auth token found")
+
+    const res = await api.delete(`/admin/supplements/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return id // return the deleted id for reducer to remove
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.msg || error.message || "Failed to delete supplement")
+  }
+})
+
+// CREATE
+export const createDietDetail = createAsyncThunk<
+  DietDetail,
+  { memberId: string; dietPlan: string },
+  { state: RootState }
+>("admin/createDietDetail", async (payload, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    const token = state.auth.token || localStorage.getItem("token");
+    if (!token) throw new Error("No auth token found");
+
+    const res = await api.post("/admin/diet-details", payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return {
+      id: res.data._id,
+      memberId: res.data.member._id,
+      memberName: res.data.member.name,
+      dietPlan: res.data.dietPlan,
+      createdDate: res.data.createdAt,
+    } as DietDetail;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.msg || error.message || "Failed to create diet detail"
+    );
+  }
+});
+
+// UPDATE
+export const updateDietDetail = createAsyncThunk<
+  DietDetail,
+  { id: string; dietPlan: string },
+  { state: RootState }
+>("admin/updateDietDetail", async (payload, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    const token = state.auth.token || localStorage.getItem("token");
+    if (!token) throw new Error("No auth token found");
+
+    const res = await api.put(`/admin/diet-details/${payload.id}`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return {
+      id: res.data._id,
+      memberId: res.data.member._id,
+      memberName: res.data.member.name,
+      dietPlan: res.data.dietPlan,
+      createdDate: res.data.createdAt,
+    } as DietDetail;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.msg || error.message || "Failed to update diet detail"
+    );
+  }
+});
+
+// DELETE
+export const deleteDietDetail = createAsyncThunk<
+  string, // just return deleted id
+  string,
+  { state: RootState }
+>("admin/deleteDietDetail", async (id, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    const token = state.auth.token || localStorage.getItem("token");
+    if (!token) throw new Error("No auth token found");
+
+    await api.delete(`/admin/diet-details/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return id;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.msg || error.message || "Failed to delete diet detail"
+    );
+  }
+});
+
+
+
 
 
 const initialState: AdminState = {
   member: null,
-  members: [],                // ✅ Initialize members list
+  members: [],
   bills: [],
+  notifications: [],
+  supplements: [],
+  dietDetails:[],
   loading: false,
   error: null,
-};
+}
 
 const adminSlice = createSlice({
   name: "admin",
@@ -328,7 +531,105 @@ const adminSlice = createSlice({
       })
 
 
+      .addCase(assignNotification.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      // Fulfilled
+      .addCase(
+        assignNotification.fulfilled,
+        (state, action: PayloadAction<Notification>) => {
+          state.loading = false
+          state.notifications.push(action.payload) // add new notification
+        }
+      )
+      // Rejected
+      .addCase(assignNotification.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
 
+
+      .addCase(createSupplement.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(createSupplement.fulfilled, (state, action: PayloadAction<Supplement>) => {
+        state.loading = false
+        state.supplements.unshift(action.payload) // add new supplement to top
+      })
+      .addCase(createSupplement.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+
+      // ✅ List Supplements
+      .addCase(listSupplements.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(listSupplements.fulfilled, (state, action: PayloadAction<Supplement[]>) => {
+        state.loading = false
+        state.supplements = action.payload
+      })
+      .addCase(listSupplements.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+
+
+      .addCase(updateSupplement.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(updateSupplement.fulfilled, (state, action: PayloadAction<Supplement>) => {
+        state.loading = false
+        const index = state.supplements.findIndex((s) => s._id === action.payload._id)
+        if (index !== -1) {
+          state.supplements[index] = action.payload
+        }
+      })
+      .addCase(updateSupplement.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+
+      .addCase(deleteSupplement.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(deleteSupplement.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false
+        state.supplements = state.supplements.filter((s) => s._id !== action.payload)
+      })
+      .addCase(deleteSupplement.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+
+      .addCase(createDietDetail.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(createDietDetail.fulfilled, (state, action: PayloadAction<DietDetail>) => {
+        state.loading = false
+        state.dietDetails.unshift(action.payload)
+      })
+      .addCase(createDietDetail.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+
+      .addCase(updateDietDetail.fulfilled, (state, action: PayloadAction<DietDetail>) => {
+        state.loading = false
+        const idx = state.dietDetails.findIndex((d) => d.id === action.payload.id)
+        if (idx !== -1) state.dietDetails[idx] = action.payload
+      })
+
+      .addCase(deleteDietDetail.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false
+        state.dietDetails = state.dietDetails.filter((d) => d.id !== action.payload)
+      })
 
   },
 });

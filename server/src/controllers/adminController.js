@@ -159,23 +159,108 @@ exports.listSupplements = async (_req, res) => {
   res.json(list);
 };
 
+
+// ✅ Update supplement
+exports.updateSupplement = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { name, price, stock } = req.body
+
+    const supplement = await Supplement.findById(id)
+    if (!supplement) {
+      return res.status(404).json({ msg: "Supplement not found" })
+    }
+
+    if (name !== undefined) supplement.name = name
+    if (price !== undefined) supplement.price = price
+    if (stock !== undefined) supplement.stock = stock
+
+    await supplement.save()
+    res.json(supplement)
+  } catch (err) {
+    console.error(err)
+    res.status(500).send("Server error")
+  }
+}
+
+// ✅ Delete supplement
+exports.deleteSupplement = async (req, res) => {
+  try {
+    const { id } = req.params
+    const supplement = await Supplement.findById(id)
+    if (!supplement) {
+      return res.status(404).json({ msg: "Supplement not found" })
+    }
+
+    await supplement.deleteOne()
+    res.json({ msg: "Supplement deleted successfully", id })
+  } catch (err) {
+    console.error(err)
+    res.status(500).send("Server error")
+  }
+}
+
+
 exports.createDietDetail = async (req, res) => {
   const { memberId, dietPlan } = req.body;
   if (!memberId || !dietPlan) {
-    return res.status(400).json({ msg: 'memberId & dietPlan required' });
+    return res.status(400).json({ msg: "memberId & dietPlan required" });
   }
   try {
     const detail = await DietDetail.create({ member: memberId, dietPlan });
+    await detail.populate("member", "name"); // fetch member name for frontend
     res.json(detail);
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 };
 
-exports.listDietDetails = async (_req, res) => {
-  const list = await DietDetail.find();
-  res.json(list);
+// LIST
+exports.listDietDetails = async (req, res) => {
+  try {
+    const details = await DietDetail.find().populate("member", "name");
+    res.json(details);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+};
+
+// UPDATE
+exports.updateDietDetail = async (req, res) => {
+  const { id } = req.params;
+  const { dietPlan } = req.body;
+
+  if (!dietPlan) return res.status(400).json({ msg: "dietPlan required" });
+
+  try {
+    const updated = await DietDetail.findByIdAndUpdate(
+      id,
+      { dietPlan },
+      { new: true }
+    ).populate("member", "name");
+
+    if (!updated) return res.status(404).json({ msg: "DietDetail not found" });
+
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+};
+
+// DELETE
+exports.deleteDietDetail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleted = await DietDetail.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ msg: "DietDetail not found" });
+    res.json({ msg: "Diet detail deleted", id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 };
 
 exports.listMembers = async (req, res) => {

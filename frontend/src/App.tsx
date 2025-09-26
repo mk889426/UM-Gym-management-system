@@ -17,6 +17,7 @@ export default function App() {
       {token && <Navbar />}
       <AnimatePresence>
         <Routes location={loc} key={loc.pathname}>
+          
           <Route path="/login" element={<LoginPage />} />
 
           {/* Main route - redirect based on role */}

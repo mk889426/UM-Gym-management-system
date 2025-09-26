@@ -6,8 +6,8 @@ const memberCtrl                  = require('../controllers/memberController');
 const router = express.Router();
 router.use(verifyToken, authorizeRoles('member'));
 
-router.get('/bills',         memberCtrl.viewBills);
-router.get('/notifications', memberCtrl.viewNotifications);
+router.get('/dashboard',  memberCtrl.getMemberDashboard);
+
 
 
 module.exports = router;

@@ -16,6 +16,7 @@ import axios from "axios"
 import { useAppDispatch, useAppSelector } from "../hooks"
 import { fetchUserDetails } from "../features/user/userSlice"
 import type { RootState } from "../app/store"
+import api from "../api/axios"
 
 type Role = "admin" | "member" | "user"
 
@@ -38,6 +39,9 @@ export default function UserHomepage() {
 
   const dispatch = useAppDispatch()
 
+  const token = useAppSelector((state: RootState) => state.auth.token)
+
+
   // Fetch user details on mount
   useEffect(() => {
     dispatch(fetchUserDetails())
@@ -52,11 +56,17 @@ export default function UserHomepage() {
 
     const fetchRecords = async () => {
       try {
-        const res = await axios.get<MemberRecord[]>(
-          `/api/user/search?q=${encodeURIComponent(searchTerm)}`,
-          { withCredentials: true }
+        const authToken = token || localStorage.getItem("token")
+        if (!authToken) throw new Error("No auth token")
+
+        const res = await api.get<MemberRecord[]>(
+          `/user/search?q=${encodeURIComponent(searchTerm)}`,
+          {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }
         )
-        setRecords(res.data)
+
+        setRecords(Array.isArray(res.data) ? res.data : [])
       } catch (err) {
         console.error("Failed to search members", err)
       }
@@ -212,42 +222,51 @@ export default function UserHomepage() {
                 </div>
 
                 <div className="space-y-3">
-                  {records.map((record, index) => (
-                    <motion.div
-                      key={record._id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="p-4 border border-rose-100 rounded-lg hover:bg-rose-50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                          <h3 className="font-medium text-gray-900">
-                            {record.name}
-                          </h3>
-                          <p className="text-sm text-gray-600 flex items-center gap-2">
-                            <Mail className="h-3.5 w-3.5" />
-                            {record.email || "—"}
-                          </p>
-                          <p className="text-sm text-gray-500 flex items-center gap-2">
-                            <Phone className="h-3.5 w-3.5" />
-                            {record.phone || "—"}
-                          </p>
-                        </div>
-                        <div className="text-right space-y-1">
-                          <Badge className={getStatusColor(record.status)}>
-                            {record.status
-                              ? record.status.charAt(0).toUpperCase() +
+                  {Array.isArray(records) && records.length > 0 ? (
+                    records.map((record, index) => (
+                      <motion.div
+                        key={record._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="p-4 border border-rose-100 rounded-lg hover:bg-rose-50 transition-colors"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-1">
+                            <h3 className="font-medium text-gray-900">{record.name}</h3>
+                            <p className="text-sm text-gray-600 flex items-center gap-2">
+                              <Mail className="h-3.5 w-3.5" />
+                              {record.email || "—"}
+                            </p>
+                            <p className="text-sm text-gray-500 flex items-center gap-2">
+                              <Phone className="h-3.5 w-3.5" />
+                              {record.phone || "—"}
+                            </p>
+                          </div>
+                          <div className="text-right space-y-1">
+                            <Badge className={getStatusColor(record.status)}>
+                              {record.status
+                                ? record.status.charAt(0).toUpperCase() +
                                 record.status.slice(1)
-                              : "—"}
-                          </Badge>
-                          <p className="text-xs text-gray-500">
-                            Joined: {formatDate(record.joinDate)}
-                          </p>
+                                : "—"}
+                            </Badge>
+                            <p className="text-xs text-gray-500">
+                              Joined: {formatDate(record.joinDate)}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))
+                  ) : searchTerm ? (
+                    <div className="text-center py-8 text-gray-500">
+                      No records found matching your search.
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-gray-400 text-sm">
+                      Start typing to search members…
+                    </div>
+                  )}
+
 
                   {records.length === 0 && searchTerm && (
                     <div className="text-center py-8 text-gray-500">

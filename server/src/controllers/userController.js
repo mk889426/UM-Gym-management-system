@@ -13,5 +13,6 @@ exports.searchMembers = async (req, res) => {
   const results = await Member.find({
     name: new RegExp(q, 'i')
   });
+
   res.json(results);
 };

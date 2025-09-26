@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { motion } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { StatsCards } from "../components/dashboard/StatsCards"
@@ -10,7 +9,8 @@ import { NotificationsTab } from "../components/dashboard/NotificationsTab"
 import { SupplementsTab } from "../components/dashboard/SupplementsTab"
 import { DietTab } from "../components/dashboard/DietTab"
 import { ReportsTab } from "../components/dashboard/ReportsTab"
-import type { Member, Bill, Notification, Supplement, DietDetail } from "../types/Gym"
+import { Toaster } from "sonner"
+
 
 export default function DashboardPage() {
   
@@ -106,6 +106,7 @@ export default function DashboardPage() {
           </Tabs>
         </motion.div>
       </motion.div>
+      <Toaster />
     </div>
   )
 }
