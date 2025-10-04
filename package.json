@@ -1,11 +1,8 @@
 {
+  "name": "gms",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "server"
-  ],
   "scripts": {
-    "build": "npm run build --workspace frontend",
-    "start": "npm run start --workspace server"
+    "build": "cd frontend && npm install --production=false && npm run build && cd ../server && npm install",
+    "start": "cd server && node server.js"
   }
 }
