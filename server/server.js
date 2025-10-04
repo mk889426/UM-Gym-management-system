@@ -1,4 +1,3 @@
-// src/index.js
 require('dotenv').config();
 
 const express = require('express');
@@ -30,11 +29,9 @@ app.use('/admin',  adminRoutes);
 app.use('/member', memberRoutes);
 app.use('/user',   userRoutes);
 
-// Health-check
 app.get('/', (_req, res) => res.send('🏋️‍♀️ Gym Management API running'));
 
-// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server listening on http://localhost:${PORT}`);
+  console.log(`🚀 Server listening on ${PORT}`);
 });
