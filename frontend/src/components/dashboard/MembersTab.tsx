@@ -22,7 +22,7 @@ import type { Member } from "../../types/Gym";
 
 export function MembersTab() {
   const dispatch = useAppDispatch();
-  const { members, member, loading } = useSelector((state: RootState) => state.admin);
+  const { members, loading } = useSelector((state: RootState) => state.admin);
 
   const [memberForm, setMemberForm] = useState({
     name: "",

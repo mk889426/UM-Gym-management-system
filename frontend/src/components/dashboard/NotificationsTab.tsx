@@ -21,8 +21,8 @@ export function NotificationsTab() {
   const members = useSelector((state: RootState) => state.admin.members) // ✅ from redux
 
   const [notificationForm, setNotificationForm] = useState({ memberId: "", message: "", date: "" })
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [loading, setLoading] = useState(false)
+  const [notifications] = useState<Notification[]>([])
+  const [loading] = useState(false)
   const dispatch = useAppDispatch();
 
   const handleAddNotification = async () => {
@@ -33,7 +33,7 @@ export function NotificationsTab() {
 
   try {
     const resultAction = await dispatch(assignNotification(notificationForm))
-    const data = unwrapResult(resultAction) 
+    unwrapResult(resultAction) 
 
     toast.success("Notification added successfully")
     setNotificationForm({ memberId: "", message: "", date: "" })

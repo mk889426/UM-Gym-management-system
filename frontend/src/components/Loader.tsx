@@ -1,4 +1,3 @@
-// src/components/Loader.tsx
 import type { FC } from 'react';
 
 const Loader: FC = () => (

@@ -75,19 +75,19 @@ export function BillingTab() {
     doc.save(`Bill_${bill.id}.pdf`)
   }
 
-  const handleUpdateStatus = async (billId: string, newStatus: "paid" | "pending") => {
-    try {
-      const action = await dispatch(updateBillStatus({ id: billId, status: newStatus }))
+  // const handleUpdateStatus = async (billId: string, newStatus: "paid" | "pending") => {
+  //   try {
+  //     const action = await dispatch(updateBillStatus({ id: billId, status: newStatus }))
 
-      if (updateBillStatus.fulfilled.match(action)) {
-        toast.success(`Bill marked as ${newStatus}`)
-      } else {
-        toast.error(action.payload as string)
-      }
-    } catch {
-      toast.error("Failed to update bill status")
-    }
-  }
+  //     if (updateBillStatus.fulfilled.match(action)) {
+  //       toast.success(`Bill marked as ${newStatus}`)
+  //     } else {
+  //       toast.error(action.payload as string)
+  //     }
+  //   } catch {
+  //     toast.error("Failed to update bill status")
+  //   }
+  // }
 
 
   return (

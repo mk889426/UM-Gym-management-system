@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
-import { Pill, Edit2, Trash2, Edit } from "lucide-react"
+import { Pill, Trash2, Edit } from "lucide-react"
 import type { Supplement } from "../../types/Gym"
 import { toast } from "sonner"
 import {

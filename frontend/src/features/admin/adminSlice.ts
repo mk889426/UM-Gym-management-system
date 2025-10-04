@@ -305,7 +305,7 @@ export const deleteSupplement = createAsyncThunk<
     const token = state.auth.token || localStorage.getItem("token")
     if (!token) throw new Error("No auth token found")
 
-    const res = await api.delete(`/admin/supplements/${id}`, {
+     await api.delete(`/admin/supplements/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     return id // return the deleted id for reducer to remove

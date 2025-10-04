@@ -56,7 +56,7 @@ export default function LoginForm({ role, goBack }: Props) {
 
       setStatus("delaying")
 
-      const timer = window.setTimeout(() => {
+       window.setTimeout(() => {
         redirectAfterLogin(result.user, navigate)
       }, 1200)
 
