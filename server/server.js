@@ -3,7 +3,7 @@ import express from "express"
 import cors from "cors"
 import morgan from "morgan"
 import path from "path"
-import connectDB from "./src/config/db"
+import connectDB from "./src/config/db.js"
 
 const authRoutes   = require('./src/routes/authRoutes');
 const adminRoutes  = require('./src/routes/adminRoutes');
