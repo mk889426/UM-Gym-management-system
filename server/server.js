@@ -1,5 +1,4 @@
-require('dotenv').config();
-
+import dotenv from "dotenv"
 const express = require('express');
 const cors    = require('cors');
 const morgan  = require('morgan');
@@ -10,6 +9,8 @@ const authRoutes   = require('./src/routes/authRoutes');
 const adminRoutes  = require('./src/routes/adminRoutes');
 const memberRoutes = require('./src/routes/memberRoutes');
 const userRoutes   = require('./src/routes/userRoutes');
+
+dotenv.config();
 
 const app = express();
 
