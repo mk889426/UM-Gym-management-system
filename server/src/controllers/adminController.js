@@ -10,6 +10,12 @@ const DietDetail = require('../models/DietDetails');
 
 exports.promoteToMember = async (req, res) => {
   const { username, name, contact, address, feePackage, joinDate } = req.body;
+  console.log("req.body === ", req.body)
+  console.log("response.body === ", res)
+
+  const users = await User.find({});
+  console.log(users);
+
 
   if (!username || !name || !contact || !address) {
     return res.status(400).json({ msg: 'username, name, contact & address required' });

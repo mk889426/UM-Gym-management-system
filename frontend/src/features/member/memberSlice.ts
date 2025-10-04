@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/tool
 import api from "../../api/axios";
 import type { Bill, DietDetail, Member, Notification } from "../../types/Gym";
 import type { RootState } from "../../app/store";
+import { logout } from "../auth/authSlice";
 
 interface MemberState {
   list: Member[];
@@ -115,6 +116,7 @@ export const memberSlice = createSlice({
     b.addCase(getMemberDashboard.rejected, (s) => {
       s.dashboardStatus = "failed";
     });
+    b.addCase(logout, () => initialState);
   },
 });
 

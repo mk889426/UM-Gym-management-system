@@ -33,7 +33,7 @@ export function NotificationsTab() {
 
   try {
     const resultAction = await dispatch(assignNotification(notificationForm))
-    const data = unwrapResult(resultAction) // data is type Notification
+    const data = unwrapResult(resultAction) 
 
     toast.success("Notification added successfully")
     setNotificationForm({ memberId: "", message: "", date: "" })

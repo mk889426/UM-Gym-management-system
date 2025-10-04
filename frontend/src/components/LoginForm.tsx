@@ -47,8 +47,7 @@ export default function LoginForm({ role, goBack }: Props) {
     setStatus("loading")
 
     try {
-      const result = await dispatch(
-        login({ username, password, role })
+      const result = await dispatch(login({ username, password, role })
       ).unwrap()
 
       toast.success("Login successful 🎉", {

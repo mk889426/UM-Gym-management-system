@@ -12,7 +12,6 @@ import {
 import { Input } from "../components/ui/input"
 import { Badge } from "../components/ui/badge"
 import { Search, User as UserIcon, Shield, Phone, Mail } from "lucide-react"
-import axios from "axios"
 import { useAppDispatch, useAppSelector } from "../hooks"
 import { fetchUserDetails } from "../features/user/userSlice"
 import type { RootState } from "../app/store"

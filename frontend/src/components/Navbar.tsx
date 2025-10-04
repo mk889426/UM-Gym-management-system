@@ -30,6 +30,7 @@ const Navbar: FC = () => {
 
     setTimeout(() => {
       dispatch(logout())
+      localStorage.clear();
       navigate("/login")
     }, 1000)
   }
