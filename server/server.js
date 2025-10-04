@@ -5,10 +5,10 @@ import morgan from "morgan"
 import path from "path"
 import connectDB from "./src/config/db.js"
 
-const authRoutes   = require('./src/routes/authRoutes');
-const adminRoutes  = require('./src/routes/adminRoutes');
-const memberRoutes = require('./src/routes/memberRoutes');
-const userRoutes   = require('./src/routes/userRoutes');
+import authRoutes from "./src/routes/authRoutes.js"
+import adminRoutes from "./src/routes/adminRoutes.js"
+import memberRoutes from "./src/routes/memberRoutes.js"
+import userRoutes from "./src/routes/userRoutes.js"
 
 dotenv.config();
 
