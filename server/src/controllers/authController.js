@@ -80,7 +80,7 @@ exports.register = async (req, res) => {
     // 4. Return token + user info (minus password)
     res.status(201).json({ token, user: { id: user._id, username, role } });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+    console.error("register error :: ",err);
+    res.status(500).send('Server error detected');
   }
 };
