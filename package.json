@@ -1,6 +1,9 @@
 {
   "name": "gms",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "cd frontend && npm install --production=false && npm run build && cd ../server && npm install",
     "start": "cd server && node server.js"
