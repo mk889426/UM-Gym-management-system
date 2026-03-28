@@ -13,6 +13,7 @@ export default function StartPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-white px-4">
       {/* floating background blobs */}
+      <h1>test render deploy</h1>
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 bg-rose-100 rounded-full opacity-20"
