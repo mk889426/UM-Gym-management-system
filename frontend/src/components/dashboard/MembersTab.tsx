@@ -38,6 +38,8 @@ export function MembersTab() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
+  const [feeSelectOpen, setFeeSelectOpen] = useState(true);
+
 
 
 
@@ -297,6 +299,8 @@ export function MembersTab() {
                   <Label htmlFor="editFeePackage" className="text-rose-800">Fee Package</Label>
                   <Select
                     value={editForm.feePackage}
+                    open={feeSelectOpen}
+                    onOpenChange={() => setFeeSelectOpen(true)}
                     onValueChange={(value) => setEditForm({ ...editForm, feePackage: value })}
                   >
                     <SelectTrigger className="border-rose-200 focus:border-rose-400">
