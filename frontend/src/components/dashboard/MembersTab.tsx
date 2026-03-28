@@ -38,8 +38,6 @@ export function MembersTab() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
-  const [feeSelectOpen, setFeeSelectOpen] = useState(true);
-
 
 
 
@@ -299,24 +297,17 @@ export function MembersTab() {
                   <Label htmlFor="editFeePackage" className="text-rose-800">Fee Package</Label>
                   <Select
                     value={editForm.feePackage}
-                    open={feeSelectOpen}
-                    onOpenChange={() => setFeeSelectOpen(true)}
                     onValueChange={(value) => setEditForm({ ...editForm, feePackage: value })}
                   >
                     <SelectTrigger className="border-rose-200 focus:border-rose-400">
                       <SelectValue placeholder="Select package" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white text-rose-800 border border-rose-200 shadow-md">
-                      <SelectItem className="text-rose-800 focus:bg-rose-100" value="Basic">
-                        Basic - $50/month
-                      </SelectItem>
-                      <SelectItem className="text-rose-800 focus:bg-rose-100" value="Premium">
-                        Premium - $100/month
-                      </SelectItem>
-                      <SelectItem className="text-rose-800 focus:bg-rose-100" value="VIP">
-                        VIP - $150/month
-                      </SelectItem>
+                    <SelectContent className="bg-rose-50">
+                      <SelectItem value="Basic">Basic - $50/month</SelectItem>
+                      <SelectItem value="Premium">Premium - $100/month</SelectItem>
+                      <SelectItem value="VIP">VIP - $150/month</SelectItem>
                     </SelectContent>
+
                   </Select>
                 </div>
                 <div className="space-y-2">
