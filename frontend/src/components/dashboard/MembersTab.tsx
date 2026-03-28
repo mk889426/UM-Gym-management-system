@@ -302,10 +302,16 @@ export function MembersTab() {
                     <SelectTrigger className="border-rose-200 focus:border-rose-400">
                       <SelectValue placeholder="Select package" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Basic">Basic - $50/month</SelectItem>
-                      <SelectItem value="Premium">Premium - $100/month</SelectItem>
-                      <SelectItem value="VIP">VIP - $150/month</SelectItem>
+                    <SelectContent className="bg-white text-rose-800 border border-rose-200 shadow-md">
+                      <SelectItem className="text-rose-800 focus:bg-rose-100" value="Basic">
+                        Basic - $50/month
+                      </SelectItem>
+                      <SelectItem className="text-rose-800 focus:bg-rose-100" value="Premium">
+                        Premium - $100/month
+                      </SelectItem>
+                      <SelectItem className="text-rose-800 focus:bg-rose-100" value="VIP">
+                        VIP - $150/month
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -364,7 +370,7 @@ export function MembersTab() {
         </DialogContent>
       </Dialog>
 
-          <Toaster />
+      <Toaster />
     </div>
   );
 }
