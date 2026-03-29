@@ -55,23 +55,23 @@ export default function DashboardPage() {
         {/* Main Content */}
         <motion.div variants={itemVariants}>
           <Tabs defaultValue="members" className="space-y-6">
-            <TabsList className="flex w-full overflow-x-auto whitespace-nowrap bg-rose-100">
-              <TabsTrigger value="members" className="flex-shrink-0 data-[state=active]:bg-rose-200">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 bg-rose-100 p-1 gap-1">
+              <TabsTrigger value="members" className="w-full text-xs sm:text-sm px-2 py-1 text-center whitespace-normal break-words data-[state=active]:bg-rose-200">
                 Members
               </TabsTrigger>
-              <TabsTrigger value="billing" className="flex-shrink-0 data-[state=active]:bg-rose-200">
+              <TabsTrigger value="billing" className="w-full text-xs sm:text-sm px-2 py-1 text-center whitespace-normal break-words data-[state=active]:bg-rose-200">
                 Billing
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="flex-shrink-0 data-[state=active]:bg-rose-200">
+              <TabsTrigger value="notifications" className="w-full text-xs sm:text-sm px-2 py-1 text-center whitespace-normal break-words data-[state=active]:bg-rose-200">
                 Notifications
               </TabsTrigger>
-              <TabsTrigger value="supplements" className="flex-shrink-0 data-[state=active]:bg-rose-200">
+              <TabsTrigger value="supplements" className="w-full text-xs sm:text-sm px-2 py-1 text-center whitespace-normal break-words data-[state=active]:bg-rose-200">
                 Supplements
               </TabsTrigger>
-              <TabsTrigger value="diet" className="flex-shrink-0 data-[state=active]:bg-rose-200">
+              <TabsTrigger value="diet" className="w-full text-xs sm:text-sm px-2 py-1 text-center whitespace-normal break-words data-[state=active]:bg-rose-200">
                 Diet Plans
               </TabsTrigger>
-              <TabsTrigger value="reports" className="flex-shrink-0 data-[state=active]:bg-rose-200">
+              <TabsTrigger value="reports" className="w-full text-xs sm:text-sm px-2 py-1 text-center whitespace-normal break-words data-[state=active]:bg-rose-200">
                 Reports
               </TabsTrigger>
             </TabsList>
