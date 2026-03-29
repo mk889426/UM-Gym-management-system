@@ -142,10 +142,10 @@ export function MembersTab() {
                 <SelectTrigger className="border-rose-200 focus:border-rose-400">
                   <SelectValue placeholder="Select package" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Basic">Basic - $50/month</SelectItem>
-                  <SelectItem value="Premium">Premium - $100/month</SelectItem>
-                  <SelectItem value="VIP">VIP - $150/month</SelectItem>
+                <SelectContent className="bg-rose-50 border border-rose-200">
+                  <SelectItem value="Basic" className="hover:bg-rose-100">Basic - $50/month</SelectItem>
+                  <SelectItem value="Premium" className="hover:bg-rose-100">Premium - $100/month</SelectItem>
+                  <SelectItem value="VIP" className="hover:bg-rose-100">VIP - $150/month</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -302,10 +302,10 @@ export function MembersTab() {
                     <SelectTrigger className="border-rose-200 focus:border-rose-400">
                       <SelectValue placeholder="Select package" />
                     </SelectTrigger>
-                    <SelectContent className="bg-rose-50">
-                      <SelectItem value="Basic">Basic - $50/month</SelectItem>
-                      <SelectItem value="Premium">Premium - $100/month</SelectItem>
-                      <SelectItem value="VIP">VIP - $150/month</SelectItem>
+                    <SelectContent className="bg-rose-50 border border-rose-200">
+                      <SelectItem value="Basic" className="hover:bg-rose-100">Basic - $50/month</SelectItem>
+                      <SelectItem value="Premium" className="hover:bg-rose-100">Premium - $100/month</SelectItem>
+                      <SelectItem value="VIP" className="hover:bg-rose-100">VIP - $150/month</SelectItem>
                     </SelectContent>
 
                   </Select>
