@@ -220,7 +220,7 @@ export function SupplementsTab() {
 
       {/* Add Dialog */}
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-        <DialogContent className="bg-white border border-rose-200 shadow-lg">
+        <DialogContent className="bg-rose-50 border border-rose-200 shadow-lg">
           <DialogHeader>
             <DialogTitle>Add Supplement</DialogTitle>
             <DialogDescription>Fill in the details to add a new supplement.</DialogDescription>
@@ -261,7 +261,7 @@ export function SupplementsTab() {
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="bg-white border border-rose-200 shadow-lg">
+        <DialogContent className="bg-rose-50 border border-rose-200 shadow-lg">
           <DialogHeader>
             <DialogTitle>Edit Supplement</DialogTitle>
             <DialogDescription>Update supplement details below.</DialogDescription>
@@ -293,7 +293,7 @@ export function SupplementsTab() {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleUpdate} disabled={loading}>
+            <Button className="bg-rose-600 hover:bg-rose-700" onClick={handleUpdate} disabled={loading}>
               {loading ? "Updating..." : "Update"}
             </Button>
           </DialogFooter>

@@ -55,23 +55,23 @@ export default function DashboardPage() {
         {/* Main Content */}
         <motion.div variants={itemVariants}>
           <Tabs defaultValue="members" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6 bg-rose-100">
-              <TabsTrigger value="members" className="data-[state=active]:bg-rose-200">
+            <TabsList className="flex w-full overflow-x-auto whitespace-nowrap bg-rose-100">
+              <TabsTrigger value="members" className="flex-shrink-0 data-[state=active]:bg-rose-200">
                 Members
               </TabsTrigger>
-              <TabsTrigger value="billing" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="billing" className="flex-shrink-0 data-[state=active]:bg-rose-200">
                 Billing
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="notifications" className="flex-shrink-0 data-[state=active]:bg-rose-200">
                 Notifications
               </TabsTrigger>
-              <TabsTrigger value="supplements" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="supplements" className="flex-shrink-0 data-[state=active]:bg-rose-200">
                 Supplements
               </TabsTrigger>
-              <TabsTrigger value="diet" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="diet" className="flex-shrink-0 data-[state=active]:bg-rose-200">
                 Diet Plans
               </TabsTrigger>
-              <TabsTrigger value="reports" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="reports" className="flex-shrink-0 data-[state=active]:bg-rose-200">
                 Reports
               </TabsTrigger>
             </TabsList>
