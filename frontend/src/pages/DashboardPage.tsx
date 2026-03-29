@@ -55,23 +55,23 @@ export default function DashboardPage() {
         {/* Main Content */}
         <motion.div variants={itemVariants}>
           <Tabs defaultValue="members" className="space-y-6">
-            <TabsList className="flex flex-col md:flex-row w-full bg-rose-100 p-1 gap-1 rounded-lg">
-              <TabsTrigger value="members" className="w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md transition-all data-[state=active]:bg-rose-300">
+            <TabsList className="h-auto flex flex-col md:flex-row w-full bg-rose-100 p-2 gap-2 rounded-xl border border-rose-200 shadow-sm">
+              <TabsTrigger value="members" className="h-auto flex-1 md:flex-none w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md data-[state=active]:bg-rose-300">
                 Members
               </TabsTrigger>
-              <TabsTrigger value="billing" className="w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md transition-all data-[state=active]:bg-rose-300">
+              <TabsTrigger value="billing" className="h-auto flex-1 md:flex-none w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md data-[state=active]:bg-rose-300">
                 Billing
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md transition-all data-[state=active]:bg-rose-300">
+              <TabsTrigger value="notifications" className="h-auto flex-1 md:flex-none w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md data-[state=active]:bg-rose-300">
                 Notifications
               </TabsTrigger>
-              <TabsTrigger value="supplements" className="w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md transition-all data-[state=active]:bg-rose-300">
+              <TabsTrigger value="supplements" className="h-auto flex-1 md:flex-none w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md data-[state=active]:bg-rose-300">
                 Supplements
               </TabsTrigger>
-              <TabsTrigger value="diet" className="w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md transition-all data-[state=active]:bg-rose-300">
+              <TabsTrigger value="diet" className="h-auto flex-1 md:flex-none w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md data-[state=active]:bg-rose-300">
                 Diet Plans
               </TabsTrigger>
-              <TabsTrigger value="reports" className="w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md transition-all data-[state=active]:bg-rose-300">
+              <TabsTrigger value="reports" className="h-auto flex-1 md:flex-none w-full md:w-auto text-left md:text-center px-3 py-2 md:px-4 md:py-2 rounded-md data-[state=active]:bg-rose-300">
                 Reports
               </TabsTrigger>
             </TabsList>
