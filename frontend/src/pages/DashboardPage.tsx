@@ -13,7 +13,7 @@ import { Toaster } from "sonner"
 
 
 export default function DashboardPage() {
-  
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -55,23 +55,23 @@ export default function DashboardPage() {
         {/* Main Content */}
         <motion.div variants={itemVariants}>
           <Tabs defaultValue="members" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 bg-rose-100">
-              <TabsTrigger value="members" className="data-[state=active]:bg-rose-200">
+            <TabsList className="flex flex-col md:grid md:grid-cols-6 bg-rose-100 p-1 gap-1">
+              <TabsTrigger value="members" className="w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-rose-200 md:text-center md:px-2 md:py-1 data-[state=active]:bg-rose-300">
                 Members
               </TabsTrigger>
-              <TabsTrigger value="billing" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="billing" className="w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-rose-200 md:text-center md:px-2 md:py-1 data-[state=active]:bg-rose-300">
                 Billing
               </TabsTrigger>
-              <TabsTrigger value="notifications" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="notifications" className="w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-rose-200 md:text-center md:px-2 md:py-1 data-[state=active]:bg-rose-300">
                 Notifications
               </TabsTrigger>
-              <TabsTrigger value="supplements" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="supplements" className="w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-rose-200 md:text-center md:px-2 md:py-1 data-[state=active]:bg-rose-300">
                 Supplements
               </TabsTrigger>
-              <TabsTrigger value="diet" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="diet" className="w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-rose-200 md:text-center md:px-2 md:py-1 data-[state=active]:bg-rose-300">
                 Diet Plans
               </TabsTrigger>
-              <TabsTrigger value="reports" className="data-[state=active]:bg-rose-200">
+              <TabsTrigger value="reports" className="w-full text-left px-3 py-2 rounded-md transition-colors hover:bg-rose-200 md:text-center md:px-2 md:py-1 data-[state=active]:bg-rose-300">
                 Reports
               </TabsTrigger>
             </TabsList>
@@ -81,22 +81,22 @@ export default function DashboardPage() {
             </TabsContent>
 
             <TabsContent value="billing">
-              <BillingTab  />
+              <BillingTab />
             </TabsContent>
 
             <TabsContent value="notifications">
               <NotificationsTab
-                
-                
+
+
               />
             </TabsContent>
 
             <TabsContent value="supplements">
-              <SupplementsTab  />
+              <SupplementsTab />
             </TabsContent>
 
             <TabsContent value="diet">
-              <DietTab  />
+              <DietTab />
             </TabsContent>
 
             <TabsContent value="reports">
