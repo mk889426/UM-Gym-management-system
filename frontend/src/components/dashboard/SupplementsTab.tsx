@@ -220,7 +220,7 @@ export function SupplementsTab() {
 
       {/* Add Dialog */}
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-white border border-rose-200 shadow-lg">
           <DialogHeader>
             <DialogTitle>Add Supplement</DialogTitle>
             <DialogDescription>Fill in the details to add a new supplement.</DialogDescription>
@@ -261,7 +261,7 @@ export function SupplementsTab() {
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-white border border-rose-200 shadow-lg">
           <DialogHeader>
             <DialogTitle>Edit Supplement</DialogTitle>
             <DialogDescription>Update supplement details below.</DialogDescription>

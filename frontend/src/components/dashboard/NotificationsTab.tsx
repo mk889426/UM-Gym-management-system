@@ -26,21 +26,21 @@ export function NotificationsTab() {
   const dispatch = useAppDispatch();
 
   const handleAddNotification = async () => {
-  if (!notificationForm.memberId || !notificationForm.message || !notificationForm.date) {
-    toast.error("All fields are required")
-    return
-  }
+    if (!notificationForm.memberId || !notificationForm.message || !notificationForm.date) {
+      toast.error("All fields are required")
+      return
+    }
 
-  try {
-    const resultAction = await dispatch(assignNotification(notificationForm))
-    unwrapResult(resultAction) 
+    try {
+      const resultAction = await dispatch(assignNotification(notificationForm))
+      unwrapResult(resultAction)
 
-    toast.success("Notification added successfully")
-    setNotificationForm({ memberId: "", message: "", date: "" })
-  } catch (err: any) {
-    toast.error(err || "Failed to send notification")
+      toast.success("Notification added successfully")
+      setNotificationForm({ memberId: "", message: "", date: "" })
+    } catch (err: any) {
+      toast.error(err || "Failed to send notification")
+    }
   }
-}
 
 
 
@@ -64,9 +64,13 @@ export function NotificationsTab() {
                 <SelectTrigger className="border-rose-200 focus:border-rose-400">
                   <SelectValue placeholder="Select member" />
                 </SelectTrigger>
-                <SelectContent>
-                  {members.map((member: Member) => (
-                    <SelectItem key={member._id} value={member._id}>
+                <SelectContent className="bg-rose-50 border border-rose-200">
+                  {members.map((member) => (
+                    <SelectItem
+                      key={member._id}
+                      value={member._id}
+                      className="hover:bg-rose-100 focus:bg-rose-100"
+                    >
                       {member.name}
                     </SelectItem>
                   ))}

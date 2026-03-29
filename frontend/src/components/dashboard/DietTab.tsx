@@ -104,9 +104,13 @@ export function DietTab() {
               <SelectTrigger className="border-rose-200 focus:border-rose-400">
                 <SelectValue placeholder="Select member" />
               </SelectTrigger>
-              <SelectContent>
-                {members.map((member: Member) => (
-                  <SelectItem key={member._id} value={member._id}>
+              <SelectContent className="bg-rose-50 border border-rose-200">
+                {members.map((member) => (
+                  <SelectItem
+                    key={member._id}
+                    value={member._id}
+                    className="hover:bg-rose-100 focus:bg-rose-100"
+                  >
                     {member.name}
                   </SelectItem>
                 ))}
