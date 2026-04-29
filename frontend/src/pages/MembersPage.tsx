@@ -20,6 +20,8 @@ import {
   CreditCard,
   Apple,
 } from "lucide-react"
+import axios from "axios"
+import api from "../api/axios"
 
 export default function MemberHomepage() {
   const dispatch = useAppDispatch()
@@ -47,6 +49,49 @@ export default function MemberHomepage() {
         return <Bell className="h-4 w-4" />
     }
   }
+
+  const handlePayment = async (bill: any) => {
+    try {
+      const { data: order } = await api.post(
+        "/payment/create-order",
+        {
+          amount: bill.amount,
+        }
+      );
+
+      const options = {
+        key: "YOUR_RAZORPAY_KEY_ID", // just paste your key here
+        amount: order.amount,
+        currency: "INR",
+        name: "Gym Portal",
+        description: "Membership Payment",
+        order_id: order.id,
+
+        handler: async function (response: any) {
+          const verifyRes = await api.post(
+            "/api/payment/verify",
+            response
+          );
+
+          if (verifyRes.data.success) {
+            alert("Payment successful");
+          } else {
+            alert("Payment failed");
+          }
+        },
+
+        theme: {
+          color: "#e11d48",
+        },
+      };
+
+      const razor = new (window as any).Razorpay(options);
+      razor.open();
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed to start");
+    }
+  };
 
   const unreadCount = notifications.filter((n) => !(n as any).read).length
 
@@ -113,8 +158,8 @@ export default function MemberHomepage() {
                   <p className="text-2xl font-bold text-yellow-600">
                     {dashboardBills.length > 0
                       ? new Date(
-                          dashboardBills[dashboardBills.length - 1].date
-                        ).toLocaleDateString()
+                        dashboardBills[dashboardBills.length - 1].date
+                      ).toLocaleDateString()
                       : "-"}
                   </p>
                 </div>
@@ -220,29 +265,41 @@ export default function MemberHomepage() {
                   {dashboardBills.map((bill) => (
                     <div
                       key={bill.id}
-                      className={`p-4 border rounded-lg flex justify-between items-center ${
-                        bill.status === "paid"
-                          ? "bg-green-50 border-green-200"
-                          : "bg-yellow-50 border-yellow-200"
-                      }`}
+                      className={`p-4 border rounded-lg flex justify-between items-center ${bill.status === "paid"
+                        ? "bg-green-50 border-green-200"
+                        : "bg-yellow-50 border-yellow-200"
+                        }`}
                     >
                       <div>
                         <p className="font-medium text-gray-900">
-                          Amount: ${bill.amount}
+                          Amount: ₹{bill.amount}
                         </p>
                         <p className="text-sm text-gray-600">
                           Date: {new Date(bill.date).toLocaleDateString()}
                         </p>
                       </div>
-                      <Badge
-                        className={
-                          bill.status === "paid"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }
-                      >
-                        {bill.status.toUpperCase()}
-                      </Badge>
+
+                      <div className="flex items-center gap-3">
+                        <Badge
+                          className={
+                            bill.status === "paid"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }
+                        >
+                          {bill.status.toUpperCase()}
+                        </Badge>
+
+                        {/* 👇 PAY BUTTON */}
+                        {bill.status !== "paid" && (
+                          <button
+                            onClick={() => handlePayment(bill)}
+                            className="bg-rose-600 text-white px-4 py-2 rounded-md hover:bg-rose-700 transition"
+                          >
+                            Pay Now
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

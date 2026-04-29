@@ -10,6 +10,7 @@ import authRoutes from "./src/routes/authRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 import memberRoutes from "./src/routes/memberRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
+import paymentRoutes from "./src/controllers/paymentController.js"
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/member", memberRoutes);
 app.use("/user", userRoutes);
+app.use("/payment", paymentRoutes);
 
 // Health check route (for API only)
 app.get("/api", (_req, res) => res.send("🏋️‍♀️ Gym Management API running"));
